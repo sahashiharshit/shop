@@ -1,8 +1,9 @@
+const { default: mongoose } = require('mongoose');
 const Product = require('../models/product');
 
 
 exports.getProducts = (req, res, next) => {
-  Product.fetchAll()
+  Product.find()
     .then(products => {
       res.render('shop/product-list', {
         prods: products,
@@ -17,6 +18,12 @@ exports.getProducts = (req, res, next) => {
 
 exports.getProduct = (req, res, next) => {
   const prodId = req.params.productId;
+  if(!mongoose.Types.ObjectId.isValid(prodId)){
+    return res.status(400).render('404', {
+      pageTitle: 'Product Not Found',
+      path: '/404'
+    });
+  }
  
   Product.findById(prodId)
     .then(product => {
@@ -30,7 +37,7 @@ exports.getProduct = (req, res, next) => {
 };
 
 exports.getIndex = (req, res, next) => {
-  Product.fetchAll()
+  Product.find()
     .then(products => {
       res.render('shop/index', {
         prods: products,
