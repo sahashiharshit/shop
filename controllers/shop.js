@@ -78,8 +78,14 @@ exports.postCart = (req, res, next) => {
 
 exports.postCartDeleteProduct = (req, res, next) => {
   const prodId = req.body.productId;
+  if (!mongoose.Types.ObjectId.isValid(prodId)) {
+    return res.status(400).render("404", {
+      pageTitle: "Product Not Found",
+      path: "/404",
+    });
+  }
   req.user
-    .deleteCartItem(prodId)
+    .deleteItemFromCart(prodId)
 
     .then((result) => {
       res.redirect("/cart");
